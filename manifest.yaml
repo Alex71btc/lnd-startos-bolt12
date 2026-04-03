@@ -1,7 +1,11 @@
-id: lnd
-title: LND
-version: 0.20.1
+id: lndbolt
+title: LND BOLT12
+version: 0.20.1.1
 release-notes: |-
+  * Custom LND build with dev tag for onion/custom messages
+  * Enables protocol.custom-message=513
+  * Enables protocol.custom-nodeann=39
+  * Enables protocol.custom-init=39
   * Update to 0.20.1 [Release Notes](https://github.com/lightningnetwork/lnd/releases/tag/v0.20.1-beta)
 license: MIT
 wrapper-repo: "https://github.com/Start9Labs/lnd-startos"

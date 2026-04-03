@@ -55,7 +55,7 @@ fn run_health_checks() -> Result<HealthCheckRes, anyhow::Error> {
                 .arg(format!("Grpc-Metadata-macaroon: {}", mac_encoded))
                 .arg("--cacert")
                 .arg("/root/.lnd/tls.cert")
-                .arg("https://lnd.embassy:8080/v1/getinfo")
+                .arg("https://lndbolt.embassy:8080/v1/getinfo")
                 .output()?
                 .stdout,
         )

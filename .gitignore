@@ -4,3 +4,15 @@ scripts/embassy.js
 docker-images/
 .DS_Store
 scripts/.DS_Store
+# build artifacts
+*.s9pk
+docker-images/
+scripts/*.js
+
+# rust
+configurator/target/
+health-check/target/
+
+# misc
+*.log
+.env

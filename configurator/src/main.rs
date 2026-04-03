@@ -537,7 +537,7 @@ fn main() -> Result<(), anyhow::Error> {
                         .arg("POST")
                         .arg("--cacert")
                         .arg("/root/.lnd/tls.cert")
-                        .arg("https://lnd.embassy:8080/v1/changepassword")
+                        .arg("https://lndbolt.embassy:8080/v1/changepassword")
                         .arg("-d")
                         .arg(serde_json::to_string(&SkipNulls(serde_json::json!({
                             "current_password": base64::encode(&password_bytes),
@@ -600,7 +600,7 @@ fn main() -> Result<(), anyhow::Error> {
                         .arg("POST")
                         .arg("--cacert")
                         .arg("/root/.lnd/tls.cert")
-                        .arg("https://lnd.embassy:8080/v1/unlockwallet")
+                        .arg("https://lndbolt.embassy:8080/v1/unlockwallet")
                         .arg("-d")
                         .arg(serde_json::to_string(&SkipNulls(serde_json::json!({
                             "wallet_password": base64::encode(&password_bytes),
@@ -659,7 +659,7 @@ fn main() -> Result<(), anyhow::Error> {
                 Some(_backups) => loop {
                     std::thread::sleep(Duration::from_secs(5));
                     let output = Command::new("lncli")
-                        .arg("--rpcserver=lnd.embassy")
+                        .arg("--rpcserver=lndbolt.embassy")
                         .arg("restorechanbackup")
                         .arg("--multi_file")
                         .arg("/root/.lnd/data/chain/bitcoin/mainnet/channel.backup")
@@ -704,7 +704,7 @@ fn main() -> Result<(), anyhow::Error> {
                 .arg("GET")
                 .arg("--cacert")
                 .arg("/root/.lnd/tls.cert")
-                .arg("https://lnd.embassy:8080/v1/genseed")
+                .arg("https://lndbolt.embassy:8080/v1/genseed")
                 .arg("-d")
                 .arg(format!("{}", serde_json::json!({})))
                 .output()?;
@@ -731,7 +731,7 @@ fn main() -> Result<(), anyhow::Error> {
                     .arg("POST")
                     .arg("--cacert")
                     .arg("/root/.lnd/tls.cert")
-                    .arg("https://lnd.embassy:8080/v1/initwallet")
+                    .arg("https://lndbolt.embassy:8080/v1/initwallet")
                     .arg("-d")
                     .arg(format!(
                         "{}",
@@ -779,7 +779,7 @@ fn main() -> Result<(), anyhow::Error> {
         }
         true => loop {
             let output = Command::new("lncli")
-                .arg("--rpcserver=lnd.embassy")
+                .arg("--rpcserver=lndbolt.embassy")
                 .arg("tower")
                 .arg("info")
                 .output();
@@ -807,7 +807,7 @@ fn main() -> Result<(), anyhow::Error> {
                     std::thread::sleep(Duration::from_secs(10));
                 }
                 Err(_) => {
-                    println!("Error running the command: lncli --rpcserver=lnd.embassy tower info");
+                    println!("Error running the command: lncli --rpcserver=lndbolt.embassy tower info");
                     std::thread::sleep(Duration::from_secs(10));
                 }
             }
@@ -829,7 +829,7 @@ fn main() -> Result<(), anyhow::Error> {
                             &parsed_watchtower_uri.pubkey, &parsed_watchtower_uri.address
                         );
                         let output = Command::new("lncli")
-                            .arg("--rpcserver=lnd.embassy")
+                            .arg("--rpcserver=lndbolt.embassy")
                             .arg("wtclient")
                             .arg("add")
                             .arg(&watchtower_uri)
@@ -849,7 +849,7 @@ fn main() -> Result<(), anyhow::Error> {
                                 std::thread::sleep(Duration::from_secs(10));
                             }
                             Err(_) => {
-                                println!("Error running the command: lncli --rpcserver=lnd.embassy wtclient add {}.", &watchtower_uri);
+                                println!("Error running the command: lncli --rpcserver=lndbolt.embassy wtclient add {}.", &watchtower_uri);
                                 std::thread::sleep(Duration::from_secs(10));
                             }
                         }

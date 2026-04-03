@@ -1,8 +1,8 @@
 ASSET_PATHS := $(shell find ./assets/*)
 CONFIGURATOR_SRC := $(shell find ./configurator -name target -prune -o -type f -print) configurator/Cargo.toml configurator/Cargo.lock
 HEALTH_CHECK_SRC := $(shell find ./health-check -name target -prune -o -type f -print) health-check/Cargo.toml health-check/Cargo.lock
-PKG_VERSION := $(shell yq e ".version" manifest.yaml)
-PKG_ID := $(shell yq e ".id" manifest.yaml)
+PKG_VERSION := $(shell sed -n 's/^version:[[:space:]]*//p' manifest.yaml | head -1)
+PKG_ID := $(shell sed -n 's/^id:[[:space:]]*//p' manifest.yaml | head -1)
 UID := $(shell id -u)
 GID := $(shell id -g)
 TS_FILES := $(shell find ./ -name \*.ts)

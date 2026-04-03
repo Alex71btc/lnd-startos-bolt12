@@ -1,7 +1,7 @@
-FROM lightninglabs/lnd:v0.20.1-beta
+FROM alex71btc/lnd-dev:0.20.1-beta-dev
 
 ARG ARCH
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     coreutils \
     curl \
@@ -14,7 +14,11 @@ RUN apk add --no-cache \
     xxd \
     ca-certificates \
     make \
-    git
+    git \
+    iproute2 \
+    net-tools \
+    vim-common \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root/lnd
 

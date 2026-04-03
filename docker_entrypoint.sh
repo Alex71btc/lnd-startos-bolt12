@@ -13,19 +13,14 @@ _term() {
 
 export HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
 export CONTAINER_IP=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
-export PEER_TOR_ADDRESS=$(yq e '.peer-tor-address' /root/.lnd/start9/config.yaml)
-export CONTROL_TOR_ADDRESS=$(yq e '.control-tor-address' /root/.lnd/start9/config.yaml)
-
+export PEER_TOR_ADDRESS=""
+export CONTROL_TOR_ADDRESS=""
 mkdir -p /root/.lnd/start9/ && mkdir -p /root/.lnd/public
 echo $PEER_TOR_ADDRESS > /root/.lnd/start9/peerTorAddress
 echo $CONTROL_TOR_ADDRESS > /root/.lnd/start9/controlTorAddress
 
-while ! openssl x509 -text -noout -in /mnt/cert/control.cert.pem -ext subjectAltName \
-  -certopt no_subject,no_header,no_version,no_serial,no_signame,no_validity,no_issuer,no_pubkey,no_sigdump,no_aux \
-  | grep "IP Address:$(ip -4 -o addr show eth0 | awk '{print $4}' | sed -e 's/\/[0-9]\+//g')"; do
-  >&2 echo Cert is not yet signed for current IP...
-  sleep 1;
-done
+echo "Skipping SAN/IP wait check for lndbolt"
+sleep 1
 
 # copy system cert
 openssl x509 -outform der -in /mnt/cert/control.cert.pem -out /root/.lnd/start9/control.cert.der
@@ -38,11 +33,25 @@ sed -i 's/\(BEGIN\|END\) PRIVATE KEY/\1 EC PRIVATE KEY/g' /root/.lnd/tls.key
 
 configurator
 configurator_child=$!
+
+LND_ARGS=(
+  --protocol.custom-message=513
+  --protocol.custom-nodeann=39
+  --protocol.custom-init=39
+  --adminmacaroonpath=/root/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
+  --readonlymacaroonpath=/root/.lnd/data/chain/bitcoin/mainnet/readonly.macaroon
+  --invoicemacaroonpath=/root/.lnd/data/chain/bitcoin/mainnet/invoice.macaroon
+  --signrpc.signermacaroonpath=/root/.lnd/data/chain/bitcoin/mainnet/signer.macaroon
+  --walletrpc.walletkitmacaroonpath=/root/.lnd/data/chain/bitcoin/mainnet/walletkit.macaroon
+  --chainrpc.notifiermacaroonpath=/root/.lnd/data/chain/bitcoin/mainnet/chainnotifier.macaroon
+  --routerrpc.routermacaroonpath=/root/.lnd/data/chain/bitcoin/mainnet/router.macaroon
+)
+
 if [ -e /root/.lnd/requires.reset_txs ]; then
   rm /root/.lnd/requires.reset_txs
-  lnd --reset-wallet-transactions &
+  lnd --reset-wallet-transactions "${LND_ARGS[@]}" &
 else
-  lnd &
+  lnd "${LND_ARGS[@]}" &
 fi
 lnd_child=$!
 
