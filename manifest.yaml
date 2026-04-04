@@ -60,6 +60,12 @@ volumes:
     type: certificate
     # id of the interface you want the cert for
     interface-id: control
+  lnd-source:
+    type: pointer
+    package-id: lnd
+    volume-id: main
+    path: /
+    readonly: true
 alerts:
   install: |
     READ CAREFULLY! LND and the Lightning Network are considered beta software. Please use with caution and do not risk more money than you are willing to lose. We encourage frequent backups, particularly after opening or closing channels. If for any reason, you need to restore LND from a backup, your on-chain wallet will be restored. Any channels in the backup will be closed and their funds returned to your on-chain wallet, minus fees. It may also take some time for this process to occur. Any channels opened after the last backup CANNOT be recovered by backup restore.
@@ -160,6 +166,21 @@ migrations:
       type: script
       args: ["to"]
 actions:
+  import-from-lnd:
+    name: "Import from Start9 LND"
+    description: "Imports wallet, channels, and state from the official Start9 LND service into this BOLT12 node."
+    allowed-statuses:
+      - stopped
+    implementation:
+      type: docker
+      image: main
+      system: false
+      entrypoint: import-from-lnd.sh
+      args: []
+      io-format: json
+      mounts:
+        main: /root/.lnd
+        lnd-source: /mnt/lnd-source
   import-umbrel-five:
     name: "Import from Umbrel (0.5)"
     description: "Imports wallet and channel data from Umbrel 0.5"
