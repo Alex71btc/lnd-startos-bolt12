@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     jq \
     yq \
+    rsync \
     netcat-openbsd \
     openssh-client \
     openssl \
