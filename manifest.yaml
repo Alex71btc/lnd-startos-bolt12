@@ -20,7 +20,7 @@ description:
 assets:
   license: LICENSE # default = LICENSE.md
   icon: icon.png # default = icon.png - assumes icon.png if this field does not exist
-  instructions: instructions.md # default = INSTRUCTIONS.md
+  instructions: INSTRUCTIONS.md # default = INSTRUCTIONS.md
 main:
   type: docker
   image: main
@@ -168,7 +168,8 @@ migrations:
 actions:
   import-from-lnd:
     name: "Import from Start9 LND"
-    description: "Imports wallet, channels, and state from the official Start9 LND service into this BOLT12 node."
+    description: "Imports the full state (wallet, channels, identity) from the official Start9 LND service into this lndbolt node."
+    warning: "Stop both lnd and lndbolt before running this action. Never run two LND nodes with the same wallet state at the same time."
     allowed-statuses:
       - stopped
     implementation:
