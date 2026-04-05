@@ -1,62 +1,64 @@
-# Wrapper for LND
+## Installation
 
-This project wraps [LND](https://github.com/lightningnetwork/lnd) for StartOS. The Lightning Network Daemon (lnd) - is a complete implementation of a Lightning Network node.
+LND BOLT12 is currently available only via GitHub Releases:
 
-## Build environment
-Before building the LND package, your build environment must be setup for building StartOS services. Instructions for setting up the proper build environment can be found in the [Developer Docs](https://docs.start9.com/latest/developer-docs/packaging).
+https://github.com/Alex71btc/lnd-startos-bolt12/releases
 
-## Dependencies
+⚠️ This is a sideload-only package.
+It is not available in the official Start9 Marketplace.
 
-- [deno](https://deno.land/)
-- [docker](https://docs.docker.com/get-docker)
-- [docker-buildx](https://docs.docker.com/buildx/working-with-buildx/)
-- [make](https://www.gnu.org/software/make/)
-- [start-sdk](https://github.com/Start9Labs/start-os/blob/v0.3.5.1/core/install-sdk.sh)
-- [yq (version 4)](https://mikefarah.gitbook.io/yq)
+Use at your own risk.
+Before testing on a production node:
+- create a full backup
+- understand the migration process
+- never run two nodes with the same state at the same time
 
-## Cloning
+# BOLT12 Pay – Setup Guide
 
-Clone the project locally.
+## Requirement: LND BOLT12
 
-```
-git clone git@github.com:Start9Labs/lnd-startos.git
-cd lnd-startos
-```
+BOLT12 Pay requires **LND BOLT12** on StartOS.
 
-## Building
+- App name in StartOS: **LND BOLT12**
+- Package ID: `lndbolt`
 
-To build the project run the command: `make`
+The default Start9 LND package does not support BOLT12 offers.
 
-Alternatively the package can be built for individual architectures by specifying the architecture as follows:
+LND BOLT12 repository:
+https://github.com/Alex71btc/lnd-startos-bolt12
 
-```
-make x86
-```
+LND BOLT12 releases:
+https://github.com/Alex71btc/lnd-startos-bolt12/releases
 
-or
+BOLT12 Pay releases:
+https://github.com/Alex71btc/bolt12-pay-start9/releases
 
-```
-make arm
-```
+## Installation
 
-## Installing (on StartOS)
+Both packages are currently distributed via GitHub Releases only.
 
-```
-start-cli auth login
-#Enter your StartOS password
-start-cli --host https://server-name.local package install lnd.s9pk
-```
+⚠️ Important:
+- These packages are **not available in the official Start9 Marketplace**
+- Installation currently requires **manual sideloading**
+- Use at your own risk
 
-If you already have your `start-cli` config file setup with a default `host`, you can install simply by running:
+## Migrate from official Start9 LND
 
-```
-make install
-```
+If you already use the official Start9 LND, you can safely migrate your node state to **LND BOLT12**.
 
-**Tip:** You can also install the lnd.s9pk using **Sideload Service** under the **StartOS > SETTINGS** section.
+1. Stop both services:
+   - LND
+   - LND BOLT12
 
-## Verify Install
+2. Open **LND BOLT12**
+3. Go to:
+   - Actions
+   - Import from Start9 LND
 
-Go to your StartOS Services page, select **LND**, configure and start the service.
+4. Wait until the import completes
 
-**Done!** 
+Important:
+- Never run both nodes with the same wallet state at the same time
+- After migration, keep the old LND stopped or uninstall it
+
+Your node identity, channels, and funds are preserved.
